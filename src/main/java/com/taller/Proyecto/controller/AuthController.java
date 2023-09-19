@@ -1,5 +1,5 @@
 package com.taller.Proyecto.controller;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 import jakarta.validation.Valid;
 
 import com.taller.Proyecto.dto.LoginDto;
@@ -36,10 +36,11 @@ public class AuthController {
 	 * 
 	 */
 	// http://localhost:8080/register/save
-
+	@CrossOrigin(origins = "http://localhost:8081")
 	@PostMapping("/register/save")
 	public ResponseEntity<Object> registration(@Valid @RequestBody UserDto userDto, BindingResult result) {
 	    User existingUser = userService.findUserByEmail((String) userDto.getEmail());
+	    
 
 	    if (existingUser != null && existingUser.getEmail() != null && !existingUser.getEmail().isEmpty()) {
 	        result.rejectValue("email", null, "There is already an account registered with the same email");
@@ -55,7 +56,7 @@ public class AuthController {
 	}
 
 	// http://localhost:8080/register/login
-
+	@CrossOrigin(origins = "http://localhost:8081")
 	@PostMapping("/register/login")
 	public ResponseEntity<String> login(@Valid @RequestBody LoginDto loginDto, BindingResult result) {
 		if (result.hasErrors()) {
