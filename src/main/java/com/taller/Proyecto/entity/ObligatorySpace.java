@@ -3,6 +3,9 @@ package com.taller.Proyecto.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.taller.Proyecto.dto.UserDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -41,7 +44,55 @@ public class ObligatorySpace {
     @Column(nullable = false)
     private String name;
     
-    @Column(nullable = false)
+    public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
+	public User getRepresentative() {
+		return representative;
+	}
+
+	public void setRepresentative(User user) {
+		this.representative = user;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getCUIT() {
+		return CUIT;
+	}
+
+	public void setCUIT(String cUIT) {
+		CUIT = cUIT;
+	}
+	
+	public List<Campus> getCampuses() {
+		return campuses;
+	}
+
+	public void setCampuses(List<Campus> campuses) {
+		this.campuses = campuses;
+	}
+
+	@Column(name = "cuit", nullable = false)
     private String CUIT;
     
     @ManyToMany
@@ -50,6 +101,7 @@ public class ObligatorySpace {
         joinColumns = @JoinColumn(name = "obligatory_space_id"),
         inverseJoinColumns = @JoinColumn(name = "campus_id")
     )
+    @JsonIgnore
     private List<Campus> campuses;
     
     // registros de la entidad Espacio Obligado pueden estar asociados a un único registro de la entidad User

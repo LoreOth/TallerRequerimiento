@@ -27,16 +27,18 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void saveUser(UserDto userDto) {
 		User user = new User();
-		user.setName(userDto.getFirstName() + " " + userDto.getLastName());
+		user.setFirstName(userDto.getFirstName());
 		user.setEmail((String) userDto.getEmail());
-		// encrypt the password using spring security
+		user.setLastName(userDto.getLastName());
 		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-		Role role = roleRepository.findByName("ROLE_ADMIN");
-		if (role == null) {
-			role = checkRoleExist();
-		}
-		user.setRoles(List.of(role));
+		  if (userDto.getRol().equals("REPRE_EO")) {
+			    Role adminRole = roleRepository.findByName("REPRE_EO");
+			    if (adminRole == null) {
+			      adminRole = checkRoleExist();
+			    }
+			    user.setRoles(List.of(adminRole));
+			  }
 		userRepository.save(user);
 	}
 
@@ -48,7 +50,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User findUserByEmail(String email) {
-		return userRepository.findByEmail(email);
+	    System.out.println(
+	    	    "Buscando usuario con email: " + email);
+	   // Solo para depuración
+	    return userRepository.findByEmail(email);
 	}
 
 	@Override
@@ -59,11 +64,17 @@ public class UserServiceImpl implements UserService {
 
 	private UserDto convertEntityToDto(User user) {
 		UserDto userDto = new UserDto();
-		String[] name = user.getName().split(" ");
-		userDto.setFirstName(name[0]);
-		userDto.setLastName(name[1]);
+		userDto.setFirstName(user.getFirstName());
+		userDto.setLastName(user.getLastName());
 		userDto.setEmail(user.getEmail());
 		return userDto;
 	}
+
+	@Override
+	public void save(User existingUser) {
+		userRepository.save(existingUser);
+		
+	}
+
 
 }
