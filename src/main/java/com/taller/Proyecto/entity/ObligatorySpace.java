@@ -21,8 +21,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
-
+@ToString
 @Getter
 @Setter
 @NoArgsConstructor
@@ -43,6 +44,9 @@ public class ObligatorySpace {
     
     @Column(nullable = false)
     private String name;
+    
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean status;
     
     public Long getId() {
 		return id;

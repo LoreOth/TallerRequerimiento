@@ -18,7 +18,7 @@ public class ObligatoySpaceDto {
     
     @NotEmpty
     private String province;
-    
+    @NotEmpty
     private Long representativeId;
 
     @NotEmpty

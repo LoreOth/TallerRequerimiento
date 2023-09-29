@@ -34,6 +34,8 @@ public class Campus {
     @Column(nullable = false)
     private String name;
     
+    
+    
     @ManyToMany
     @JoinTable(
         name = "campus_representatives", // Nombre de la tabla intermedia

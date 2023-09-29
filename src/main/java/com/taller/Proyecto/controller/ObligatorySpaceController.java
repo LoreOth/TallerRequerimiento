@@ -27,6 +27,7 @@ public class ObligatorySpaceController {
     @PostMapping("/obligatory-spaces/create")
     public ResponseEntity<ObligatorySpace> createObligatorySpace(@RequestBody ObligatoySpaceDto dto) {
         ObligatorySpace obligatorySpace = obligatorySpaceService.createNewObligatorySpace(dto);
+        System.out.println(obligatorySpace);
         return new ResponseEntity<>(obligatorySpace, HttpStatus.CREATED);
     }
     
