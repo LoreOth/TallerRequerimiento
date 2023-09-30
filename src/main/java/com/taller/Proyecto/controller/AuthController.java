@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
@@ -25,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 public class AuthController {
 	@Autowired
 	private UserService userService;
@@ -116,9 +117,9 @@ public class AuthController {
 	  @GetMapping("/register/getCurrentUser")
 	    public ResponseEntity<User> getCurrentUser(@RequestParam String email) {
 		User user = userService.findUserByEmail(email);
-	        
+	        System.out.println(user);
 	        if (user != null) {
-	            return ResponseEntity.ok(user);
+	            return new ResponseEntity<>(user, HttpStatus.OK);
 	        } else {
 	            return ResponseEntity.notFound().build();  // 404 Not Found
 	        }

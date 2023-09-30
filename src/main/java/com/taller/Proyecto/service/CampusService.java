@@ -27,9 +27,9 @@ public class CampusService {
     @Transactional
     public Campus createCampus(CampusDto dto) {
         Campus campus = new Campus();
-
+        campus.setCuit(dto.getCuit());
         campus.setName(dto.getName());
-        campus.setProvince(dto.getProvince());
+        campus.setProvince("");
  
 
         // Asociar el campus con su ObligatorySpace usando el id

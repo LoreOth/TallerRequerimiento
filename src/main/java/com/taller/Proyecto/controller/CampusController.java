@@ -31,7 +31,13 @@ public class CampusController {
         return new ResponseEntity<>(campus, HttpStatus.CREATED);
     }
 
-    
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/create/campusFromSpace")
+    public ResponseEntity<Campus> createCampusWithObligatorySpace(@RequestBody CampusDto dto) {
+        Campus campus = campusService.createCampus(dto);
+        return new ResponseEntity<>(campus, HttpStatus.CREATED);
+    }
+
     
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{obligatorySpaceId}/sedes")

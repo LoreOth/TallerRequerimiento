@@ -26,26 +26,32 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void saveUser(UserDto userDto) {
-		User user = new User();
-		user.setFirstName(userDto.getFirstName());
-		user.setEmail((String) userDto.getEmail());
-		user.setLastName(userDto.getLastName());
-		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+	    User user = new User();
+	    user.setFirstName(userDto.getFirstName());
+	    user.setEmail((String) userDto.getEmail());
+	    user.setLastName(userDto.getLastName());
+	    user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-		  if (userDto.getRol().equals("REPRE_EO")) {
-			    Role adminRole = roleRepository.findByName("REPRE_EO");
-			    if (adminRole == null) {
-			      adminRole = checkRoleExist();
-			    }
-			    user.setRoles(List.of(adminRole));
-			  }
-		userRepository.save(user);
+	    if (userDto.getRol().equals("REPRE_EO")) {
+	        Role adminRole = getOrCreateAdminRole();
+	        user.setRoles(List.of(adminRole));
+	    }
+
+	    userRepository.save(user);
 	}
 
-	private Role checkRoleExist() {
-		Role role = new Role();
-		role.setName("ROLE_ADMIN");
-		return roleRepository.save(role);
+	private Role getOrCreateAdminRole() {
+	    // Try to find the ROLE_ADMIN in the database
+	    Role role = roleRepository.findByName("ROLE_ADMIN");
+	    
+	    // If it's not found, create and save it
+	    if (role == null) {
+	        role = new Role();
+	        role.setName("ROLE_ADMIN");
+	        role = roleRepository.save(role);  // Save and re-assign to get the persisted entity with ID
+	    }
+
+	    return role;
 	}
 
 	@Override

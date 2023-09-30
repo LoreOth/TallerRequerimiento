@@ -34,7 +34,8 @@ public class Campus {
     @Column(nullable = false)
     private String name;
     
-    
+    @Column(nullable = false)
+    private String cuit;
     
     @ManyToMany
     @JoinTable(

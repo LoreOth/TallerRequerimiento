@@ -19,18 +19,10 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @ManyToMany(mappedBy = "roles")
     private List<User> users;
 
-	public void setName(String name) {
-		this.name=name;
-		
-	}
-
-	public String getName() {
-		return this.name;
-	}
 }

@@ -99,6 +99,7 @@ public class ObligatorySpace {
 	@Column(name = "cuit", nullable = false)
     private String CUIT;
     
+
     @ManyToMany
     @JoinTable(
         name = "campus_of_obligatory_spaces",
