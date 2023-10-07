@@ -1,6 +1,7 @@
 package com.taller.Proyecto.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,16 @@ public class DEAService {
     
     @Autowired
     private CampusRepository campusRepository;
+    
+
+    public List<DEA> findDeasByCampus(Long campusId) {
+        Campus campus = campusRepository.findById(campusId).orElse(null);
+        if (campus != null) {
+            return campus.getDeas();
+        } else {
+            throw new RuntimeException("Campus no encontrado con ID: " + campusId);
+        }
+    }
 
     public void saveDeaWithCampus(String brand, String model, Long campusId) {
         // Crear el objeto DEA
@@ -38,6 +49,8 @@ public class DEAService {
         // Guardar el objeto Campus con la relación
         campusRepository.save(campus);
     }
+    
+    
 }
 	
 
