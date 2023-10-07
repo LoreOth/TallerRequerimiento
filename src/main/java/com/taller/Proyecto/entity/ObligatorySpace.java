@@ -4,8 +4,9 @@ package com.taller.Proyecto.entity;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.taller.Proyecto.dto.UserDto;
-
+import com.taller.Proyecto.service.CardioAssisted;
+import com.taller.Proyecto.service.InProcessToBeCardioAssisted;
+import com.taller.Proyecto.service.StateSpace;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,8 +16,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.PostLoad;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,9 +47,17 @@ public class ObligatorySpace {
     @Column(nullable = false)
     private String name;
     
+    /*
+    @Column(name = "state_value", nullable = false)
+    private String stateValue;
+*/
+    @Transient
+    private StateSpace state;
+    
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean status;
     
+ 
     public Long getId() {
 		return id;
 	}
@@ -109,7 +119,6 @@ public class ObligatorySpace {
     @JsonIgnore
     private List<Campus> campuses;
     
-    // registros de la entidad Espacio Obligado pueden estar asociados a un único registro de la entidad User
-    // nro cuit, razón social, nombre de sede
 
 }
+

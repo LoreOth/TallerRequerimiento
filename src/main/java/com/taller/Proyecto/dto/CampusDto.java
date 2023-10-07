@@ -30,6 +30,9 @@ public class CampusDto {
     
     private Long obligatorySpaceId;
 
+    private Long representativeId;
+    
+
     
     
 

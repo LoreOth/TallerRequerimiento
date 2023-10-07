@@ -2,6 +2,8 @@ package com.taller.Proyecto.entity;
 
 import java.util.List;
 
+import com.taller.Proyecto.service.StateSpace;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,6 +14,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,6 +55,10 @@ public class Campus {
     
     @ManyToMany(mappedBy = "campuses")
     private List<ObligatorySpace> obligatorySpaces;
+    
+    // Esto no se mapeará directamente a la base de datos, en cambio, usarás otro campo (como un Enum o String) para representar el estado en la BD
+    @Transient
+    private StateSpace state;
 
 	public Long getId() {
 		return id;

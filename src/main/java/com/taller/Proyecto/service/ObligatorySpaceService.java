@@ -18,11 +18,13 @@ public class ObligatorySpaceService {
 
     private final ObligatorySpaceRepository obligatorySpaceRepository;
     private final UserRepository userRepository;
+    
 
     @Autowired
     public ObligatorySpaceService(ObligatorySpaceRepository obligatorySpaceRepository, UserRepository userRepository) {
         this.obligatorySpaceRepository = obligatorySpaceRepository;
 		this.userRepository = userRepository;
+
     }
 
     public List<ObligatorySpace> getAllObligatorySpaces() {
@@ -51,4 +53,6 @@ public class ObligatorySpaceService {
     public ObligatorySpace findByCUIT(String cuit) {
         return obligatorySpaceRepository.findByCUIT(cuit);
     }
+    
+    
 }
