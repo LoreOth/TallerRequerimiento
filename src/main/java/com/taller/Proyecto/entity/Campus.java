@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,16 +43,20 @@ public class Campus {
     
     @ManyToMany
     @JoinTable(
-        name = "campus_representatives", // Nombre de la tabla intermedia
+        name = "campus_dea", 
+        joinColumns = @JoinColumn(name = "campus_id"),
+        inverseJoinColumns = @JoinColumn(name = "dea_id")
+    )
+    private List<DEA> deas;
+    
+    @ManyToMany
+    @JoinTable(
+        name = "campus_representatives", 
         joinColumns = @JoinColumn(name = "campus_id"),
         inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<User> representatives;
 
-    
-    @ManyToOne
-    @JoinColumn(name = "obligatory_space_id")
-    private ObligatorySpace obligatorySpace;
     
     @ManyToMany(mappedBy = "campuses")
     private List<ObligatorySpace> obligatorySpaces;
@@ -60,6 +65,10 @@ public class Campus {
     @Transient
     private StateSpace state;
 
+    public void setState(StateSpace state) {
+    	this.state=state;
+    }
+    
 	public Long getId() {
 		return id;
 	}
@@ -95,15 +104,6 @@ public class Campus {
 		this.status = status;
 	}
 
-
-	public ObligatorySpace getObligatorySpace() {
-		return obligatorySpace;
-	}
-
-	public void setObligatorySpace(ObligatorySpace obligatorySpace) {
-		this.obligatorySpace = obligatorySpace;
-	}
-
 	public List<ObligatorySpace> getObligatorySpaces() {
 		return obligatorySpaces;
 	}
@@ -114,5 +114,4 @@ public class Campus {
 
 
     
-    //muchos Campus pueden tener una única ObligatorySpace
 }

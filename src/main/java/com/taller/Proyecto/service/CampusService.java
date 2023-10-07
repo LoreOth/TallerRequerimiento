@@ -23,7 +23,7 @@ public class CampusService {
     private CampusRepository campusRepository;
 
     public List<Campus> findCampusesByObligatorySpaceId(Long obligatorySpaceId) {
-        return campusRepository.findByObligatorySpaceId(obligatorySpaceId);
+        return campusRepository.findByObligatorySpaces_Id(obligatorySpaceId);
     }
     @Autowired
     private ObligatorySpaceRepository obligatorySpaceRepository;
@@ -36,23 +36,39 @@ public class CampusService {
         Campus campus = new Campus();
         campus.setCuit(dto.getCuit());
         campus.setName(dto.getName());
-        
-
+            
         // Asociar el campus con su ObligatorySpace usando el id
         ObligatorySpace obligatorySpace = obligatorySpaceRepository.findById(dto.getObligatorySpaceId())
                         .orElseThrow(() -> new EntityNotFoundException("ObligatorySpace not found"));
-        campus.setObligatorySpace(obligatorySpace);
+            
+        // Añadir el espacio obligatorio al campus
+        if (campus.getObligatorySpaces() == null) {
+            campus.setObligatorySpaces(new ArrayList<>());
+        }
+        campus.getObligatorySpaces().add(obligatorySpace);
+
+        // Aquí es donde manejas la otra parte de la relación:
+        if (obligatorySpace.getCampuses() == null) {
+            obligatorySpace.setCampuses(new ArrayList<>());
+        }
+        obligatorySpace.getCampuses().add(campus);
+
         campus.setProvince(obligatorySpace.getProvince());
 
         // Asociar el campus con su representante usando el id
         User representative = userRepository.findById(dto.getRepresentativeId())
                         .orElseThrow(() -> new EntityNotFoundException("User representative not found"));
 
-        // Añade el representante a la lista de representantes del campus
-        List<User> representatives = new ArrayList<>();
-        representatives.add(representative);
-        campus.setRepresentatives(representatives);
-        
+        if (campus.getRepresentatives() == null) {
+            campus.setRepresentatives(new ArrayList<>());
+        }
+        campus.getRepresentatives().add(representative);
+
         return campusRepository.save(campus);
     }
+    public List<Campus> findCampusesByRepresentativeId(Long representativeId) {
+        return campusRepository.findByRepresentatives_Id(representativeId);
+
+
+}
 }

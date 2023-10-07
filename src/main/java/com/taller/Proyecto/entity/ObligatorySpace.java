@@ -51,61 +51,11 @@ public class ObligatorySpace {
     @Column(name = "state_value", nullable = false)
     private String stateValue;
 */
-    @Transient
-    private StateSpace state;
+
     
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean status;
-    
  
-    public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getProvince() {
-		return province;
-	}
-
-	public void setProvince(String province) {
-		this.province = province;
-	}
-
-	public User getRepresentative() {
-		return representative;
-	}
-
-	public void setRepresentative(User user) {
-		this.representative = user;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getCUIT() {
-		return CUIT;
-	}
-
-	public void setCUIT(String cUIT) {
-		CUIT = cUIT;
-	}
-	
-	public List<Campus> getCampuses() {
-		return campuses;
-	}
-
-	public void setCampuses(List<Campus> campuses) {
-		this.campuses = campuses;
-	}
-
 	@Column(name = "cuit", nullable = false)
     private String CUIT;
     

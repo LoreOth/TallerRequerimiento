@@ -1,5 +1,7 @@
 package com.taller.Proyecto.dto;
 
+import java.sql.Date;
+
 import com.taller.Proyecto.entity.User;
 
 import jakarta.validation.constraints.NotEmpty;
@@ -8,33 +10,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
 @ToString
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class CampusDto {
-	
+public class DeaDto {
 	private Long id;
     @NotEmpty
-    private String name;
+    private String brand;
     
     @NotEmpty
-    private String province;
+    private String model;
     
     @NotEmpty
-    private String cuit;
+    private Long campusId;
     
-    @NotEmpty
-    private User representative;
-  
-    private Long representativeId;
+    private Date dateMaintenance;
     
-
-    private Long obligatorySpaceId;
-
-
+    private Boolean status;
     
-    
-
 }

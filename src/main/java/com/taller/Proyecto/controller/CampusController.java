@@ -37,7 +37,12 @@ public class CampusController {
         Campus campus = campusService.createCampus(dto);
         return new ResponseEntity<>(campus, HttpStatus.CREATED);
     }
-
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/representatives/{id}/campuses")
+    public ResponseEntity<List<CampusDto>> getCampusesByRepresentativeId(@PathVariable Long id) {
+        List<Campus> campuses = campusService.findCampusesByRepresentativeId(id);
+        return ResponseEntity.ok(mapToDtoList(campuses)); // Utiliza tu método de mapeo para convertir a DTO
+    }
     
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/{obligatorySpaceId}/sedes")
