@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 @ToString
 @Getter
@@ -36,7 +37,7 @@ public class User {
     @Column(nullable = true)
     private String address;
     
-
+   
 	@ManyToMany(mappedBy = "representatives")
     private List<Campus> representedCampuses; 
 
