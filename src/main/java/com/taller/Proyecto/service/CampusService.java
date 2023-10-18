@@ -71,4 +71,21 @@ public class CampusService {
 
 
 }
+    
+    
+    public void addRepresentativeToCampus(Long campusId, Long userId) {
+        // 1. Obtener las instancias de Campus y User usando los IDs.
+        Campus campus = campusRepository.findById(campusId).orElseThrow(() -> new RuntimeException("Campus no encontrado"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // 2. Añadir el User a la lista de representatives del Campus.
+        if (campus.getRepresentatives() == null) {
+            campus.setRepresentatives(new ArrayList<>());
+        }
+        campus.getRepresentatives().add(user);
+
+        // 3. Guardar la entidad Campus. 
+        // Debido a la relación bidireccional, JPA actualizará automáticamente la tabla intermedia.
+        campusRepository.save(campus);
+    }
 }

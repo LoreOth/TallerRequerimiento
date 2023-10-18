@@ -2,6 +2,7 @@ package com.taller.Proyecto.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.taller.Proyecto.service.StateSpace;
 
 import jakarta.persistence.Column;
@@ -55,6 +56,7 @@ public class Campus {
         joinColumns = @JoinColumn(name = "campus_id"),
         inverseJoinColumns = @JoinColumn(name = "user_id")
     )
+    @JsonBackReference
     private List<User> representatives;
 
     

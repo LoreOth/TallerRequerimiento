@@ -22,6 +22,8 @@ public class CampusDto {
     @NotEmpty
     private String province;
     
+    private boolean isRepresented;
+    
     @NotEmpty
     private String cuit;
     

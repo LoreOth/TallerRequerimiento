@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.taller.Proyecto.dto.ObligatorySpaceResponseDto;
 import com.taller.Proyecto.dto.ObligatoySpaceDto;
 import com.taller.Proyecto.entity.ObligatorySpace;
+import com.taller.Proyecto.mappers.ObligatorySpaceConverter;
 import com.taller.Proyecto.service.ObligatorySpaceService;
 
 import java.util.ArrayList;
@@ -35,10 +37,11 @@ public class ObligatorySpaceController {
     
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/obligatory-spaces/cuit/{cuit}")
-    public ResponseEntity<ObligatorySpace> getObligatorySpaceByCUIT(@PathVariable String cuit) {
+    public ResponseEntity<ObligatorySpaceResponseDto> getObligatorySpaceByCUIT(@PathVariable String cuit) {
         ObligatorySpace obligatorySpace = obligatorySpaceService.findByCUIT(cuit);
         if (obligatorySpace != null) {
-            return new ResponseEntity<>(obligatorySpace, HttpStatus.OK);
+        	ObligatorySpaceResponseDto dto = ObligatorySpaceConverter.toDTO(obligatorySpace);
+            return new ResponseEntity<>(dto, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
