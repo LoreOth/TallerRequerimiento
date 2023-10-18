@@ -42,6 +42,30 @@ public class Campus {
     @Column(nullable = false)
     private String cuit;
     
+    @Column
+    private Double latitude;
+
+    @Column
+    private Double longitude;
+
+    @Column
+    private String city;
+
+    @Column
+    private String address;
+
+    @Column
+    private String area;
+
+    @Column
+    private Integer floors;
+
+    @Column
+    private Integer permanentStaff;
+
+    @Column
+    private Integer averageVisits;
+    
     @ManyToMany
     @JoinTable(
         name = "campus_dea", 

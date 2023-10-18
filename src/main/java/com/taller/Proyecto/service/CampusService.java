@@ -1,5 +1,6 @@
 package com.taller.Proyecto.service;
 
+import com.taller.Proyecto.dto.CampusDataDto;
 import com.taller.Proyecto.dto.CampusDto;
 import com.taller.Proyecto.entity.Campus;
 import com.taller.Proyecto.entity.ObligatorySpace;
@@ -37,17 +38,17 @@ public class CampusService {
         campus.setCuit(dto.getCuit());
         campus.setName(dto.getName());
             
-        // Asociar el campus con su ObligatorySpace usando el id
+       
         ObligatorySpace obligatorySpace = obligatorySpaceRepository.findById(dto.getObligatorySpaceId())
                         .orElseThrow(() -> new EntityNotFoundException("ObligatorySpace not found"));
             
-        // Añadir el espacio obligatorio al campus
+     
         if (campus.getObligatorySpaces() == null) {
             campus.setObligatorySpaces(new ArrayList<>());
         }
         campus.getObligatorySpaces().add(obligatorySpace);
 
-        // Aquí es donde manejas la otra parte de la relación:
+    
         if (obligatorySpace.getCampuses() == null) {
             obligatorySpace.setCampuses(new ArrayList<>());
         }
@@ -71,7 +72,29 @@ public class CampusService {
 
 
 }
-    
+    public Campus findCampusById(Long id) {
+        return campusRepository.findById(id).orElse(null);
+    }
+    public void updateCampus(CampusDataDto campusDataDto) {
+   
+        Campus campus = campusRepository.findById(campusDataDto.getId())
+                .orElseThrow(() -> new RuntimeException("Campus no encontrado con ID: " + campusDataDto.getId()));
+
+      
+        campus.setName(campusDataDto.getName());
+        campus.setLatitude(campusDataDto.getLatitude());
+        campus.setLongitude(campusDataDto.getLongitude());
+        campus.setProvince(campusDataDto.getProvince());
+        campus.setCity(campusDataDto.getCity());
+        campus.setAddress(campusDataDto.getAddress());
+        campus.setArea(campusDataDto.getArea());
+        campus.setFloors(campusDataDto.getFloors());
+       // campus.setStaff(campusDataDto.getStaff());
+       // campus.setVisits(campusDataDto.getVisits());
+
+        // Guardamos el campus actualizado en la base de datos.
+        campusRepository.save(campus);
+    }
     
     public void addRepresentativeToCampus(Long campusId, Long userId) {
         // 1. Obtener las instancias de Campus y User usando los IDs.

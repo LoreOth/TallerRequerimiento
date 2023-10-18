@@ -4,8 +4,11 @@ import jakarta.validation.Valid;
 
 import com.taller.Proyecto.dto.LoginDto;
 import com.taller.Proyecto.dto.UserDto;
+import com.taller.Proyecto.dto.UserResponseDto;
 import com.taller.Proyecto.entity.Role;
 import com.taller.Proyecto.entity.User;
+import com.taller.Proyecto.mappers.ApiResponse;
+import com.taller.Proyecto.mappers.UserMapper;
 import com.taller.Proyecto.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,44 +89,40 @@ public class AuthController {
 	// http://localhost:8080/register/login
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/register/login")
-	public ResponseEntity<Map<String, Object>> login(@Valid @RequestBody LoginDto loginDto, BindingResult result) {
+	public ResponseEntity<ApiResponse<UserResponseDto>> login(@Valid @RequestBody LoginDto loginDto, BindingResult result) {
+	    ApiResponse<UserResponseDto> response = new ApiResponse<>();
+
 	    if (result.hasErrors()) {
-	        // Manejar errores de validación
-	        Map<String, Object> response = new HashMap<>();
-	        response.put("error", "Error de validación");
+	        response.setError("Error de validación");
 	        return ResponseEntity.badRequest().body(response);
 	    }
+	    
 	    User user = userService.findUserByEmail(loginDto.getEmail());
 
 	    if (user == null || !passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
-	        // Las credenciales son inválidas
-	        Map<String, Object> response = new HashMap<>();
-	        response.put("error", "Credenciales inválidas");
+	        response.setError("Credenciales inválidas");
 	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
 	    }
 
-	    Map<String, Object> response = new HashMap<>();
-	    response.put("email", user.getEmail());
-	    response.put("id", user.getId());
-	    List<Role> userRoles = (List<Role>) user.getRoles();
-	    System.out.println(response);
-	    response.put("role", userRoles.stream().map(Role::getName).collect(Collectors.toList()));
-
+	    UserResponseDto userDto = UserMapper.toDTO(user);
+	    response.setData(userDto);
 	    return ResponseEntity.ok(response);
 	}
 	
 	// http://localhost:8080/register/getCurrentUser
 	@CrossOrigin(origins = "http://localhost:3000")
-	  @GetMapping("/register/getCurrentUser")
-	    public ResponseEntity<User> getCurrentUser(@RequestParam String email) {
-		User user = userService.findUserByEmail(email);
-	        System.out.println(user);
-	        if (user != null) {
-	            return new ResponseEntity<>(user, HttpStatus.OK);
-	        } else {
-	            return ResponseEntity.notFound().build();  // 404 Not Found
-	        }
+	@GetMapping("/register/getCurrentUser")
+	public ResponseEntity<UserResponseDto> getCurrentUser(@RequestParam String email) {
+	    User user = userService.findUserByEmail(email);
+	    System.out.println(user);
+	    if (user != null) {
+	        UserResponseDto userDto = UserMapper.toDTO(user);
+	        return new ResponseEntity<>(userDto, HttpStatus.OK);
+	    } else {
+	        return ResponseEntity.notFound().build();  // 404 Not Found
 	    }
+	}
+
 	
 
 	@PostMapping("/register/logout")

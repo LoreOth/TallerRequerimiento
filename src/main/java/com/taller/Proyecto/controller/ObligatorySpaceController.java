@@ -27,10 +27,12 @@ public class ObligatorySpaceController {
    
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/obligatory-spaces/create")
-    public ResponseEntity<ObligatorySpace> createObligatorySpace(@RequestBody ObligatoySpaceDto dto) {
+    public ResponseEntity<ObligatoySpaceDto> createObligatorySpace(@RequestBody ObligatoySpaceDto dto) {
         ObligatorySpace obligatorySpace = obligatorySpaceService.createNewObligatorySpace(dto);
         System.out.println(obligatorySpace);
-        return new ResponseEntity<>(obligatorySpace, HttpStatus.CREATED);
+        
+        ObligatoySpaceDto responseDto = convertToDto(obligatorySpace);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
     
     
@@ -73,6 +75,14 @@ public class ObligatorySpaceController {
 	        dtos.add(dto);
 	    }
 	    return dtos;
+	}
+	private ObligatoySpaceDto convertToDto(ObligatorySpace space) {
+	    ObligatoySpaceDto dto = new ObligatoySpaceDto();
+	    dto.setName(space.getName());
+	    dto.setProvince(space.getProvince());
+	    dto.setCUIT(space.getCUIT());
+	    dto.setId(space.getId());
+	    return dto;
 	}
 }
 	
