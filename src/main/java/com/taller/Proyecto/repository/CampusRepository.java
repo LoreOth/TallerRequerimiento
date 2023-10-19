@@ -15,4 +15,5 @@ public interface CampusRepository extends JpaRepository<Campus, Long> {
 	@Query("SELECT COUNT(c) FROM Campus c JOIN c.representatives r WHERE c.id = :campusId AND r.id = :userId")
     Long countByCampusIdAndUserId(@Param("campusId") Long campusId, @Param("userId") Long userId);
 
+
 }

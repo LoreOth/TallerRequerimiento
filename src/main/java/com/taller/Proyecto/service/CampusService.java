@@ -72,6 +72,15 @@ public class CampusService {
 
 
 }
+    
+    public int countDeasByCampusId(Long campusId) {
+        Campus campus = campusRepository.findById(campusId).orElse(null);
+        if (campus == null) {
+            throw new RuntimeException("Campus no encontrado");
+        }
+        return campus.getDeas().size();
+    }
+
     public Campus findCampusById(Long id) {
         return campusRepository.findById(id).orElse(null);
     }

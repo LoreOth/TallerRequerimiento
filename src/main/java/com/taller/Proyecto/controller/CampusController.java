@@ -65,6 +65,17 @@ public class CampusController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/{id}/deaCount")
+    public ResponseEntity<Integer> getDeaCountByCampusId(@PathVariable Long id) {
+        try {
+            int count = campusService.countDeasByCampusId(id);
+            return new ResponseEntity<>(count, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     private CampusDataDto mapCampusToDto(Campus campus) {
         CampusDataDto dto = new CampusDataDto();
         dto.setId(campus.getId());
