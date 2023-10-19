@@ -142,6 +142,7 @@ public class CampusController {
         dto.setName(campus.getName());
         dto.setProvince(campus.getProvince());
         dto.setRepresented(isCampusRepresentedByUser(campus.getId(), userId));
+        dto.setStatus(campus.isStatus());
         return dto;
     }
 
