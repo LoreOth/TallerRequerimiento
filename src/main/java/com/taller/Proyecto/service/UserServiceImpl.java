@@ -32,23 +32,24 @@ public class UserServiceImpl implements UserService {
 	    user.setLastName(userDto.getLastName());
 	    user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-	    if (userDto.getRol().equals("REPRE_EO")) {
-	        Role adminRole = getOrCreateAdminRole();
-	        user.setRoles(List.of(adminRole));
-	    }
+	    Role userRole = roleRepository.findByName("USER");
+        if (userRole == null) {
+            userRole = new Role();
+            userRole.setName("USER");
+            roleRepository.save(userRole);
+        }
+        user.getRoles().add(userRole);
 
 	    userRepository.save(user);
 	}
 
 	private Role getOrCreateAdminRole() {
-	    // Try to find the ROLE_ADMIN in the database
 	    Role role = roleRepository.findByName("ROLE_ADMIN");
 	    
-	    // If it's not found, create and save it
 	    if (role == null) {
 	        role = new Role();
 	        role.setName("ROLE_ADMIN");
-	        role = roleRepository.save(role);  // Save and re-assign to get the persisted entity with ID
+	        role = roleRepository.save(role); 
 	    }
 
 	    return role;

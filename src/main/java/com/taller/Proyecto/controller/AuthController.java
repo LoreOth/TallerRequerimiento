@@ -5,7 +5,6 @@ import jakarta.validation.Valid;
 import com.taller.Proyecto.dto.LoginDto;
 import com.taller.Proyecto.dto.UserDto;
 import com.taller.Proyecto.dto.UserResponseDto;
-import com.taller.Proyecto.entity.Role;
 import com.taller.Proyecto.entity.User;
 import com.taller.Proyecto.mappers.ApiResponse;
 import com.taller.Proyecto.mappers.UserMapper;
@@ -14,7 +13,6 @@ import com.taller.Proyecto.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,10 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
 
 @RestController
 public class AuthController {
@@ -35,16 +31,7 @@ public class AuthController {
 	private UserService userService;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
-	/*
-	 * 
-	 * En el controlador `registration`, se recibe un objeto `UserDto` en el modelo
-	 * que representa los datos del usuario a guardar. Se realiza una validación
-	 * para verificar si ya existe un usuario registrado con el mismo correo
-	 * electrónico.Se guarda el usuario . Y se crea un relacion en user roles de
-	 * dicho usario y rol admin. utilizando el servicio `userService`
-	 * 
-	 */
+	
 	// http://localhost:8080/register/save
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/register/save")
@@ -67,20 +54,18 @@ public class AuthController {
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/register/updateUser")
 	public void updateUser(@RequestBody UserDto userDto) throws Exception {
-	    // Primero, verifica si el usuario con el email dado existe
+
 	    User existingUser = userService.findUserByEmail(userDto.getEmail());
 	    if (existingUser == null) {
 	        throw new Exception("User with email " + userDto.getEmail() + " not found.");
 	    }
 
-	    // Luego, actualiza cada campo del usuario con los valores del UserDto
 	    existingUser.setFirstName(userDto.getFirstName());
 	    existingUser.setLastName(userDto.getLastName());
 	    existingUser.setPhone(userDto.getPhone());
 	    existingUser.setAddress(userDto.getAddress());
 	    existingUser.setProvince(userDto.getProvince());
 
-	    // Guarda el usuario actualizado en la base de datos
 	    userService.save(existingUser);
 	}
 
@@ -131,11 +116,6 @@ public class AuthController {
 		return ResponseEntity.ok("Cierre de sesión exitoso");
 	}
 
-	// http://localhost:8080/register/users
-	/*
-	 * Lista los usuarios registrados en la base de datos
-	 * 
-	 */
 
 	@GetMapping("register/users")
 	public ResponseEntity<List<UserDto>> listAllUsers() {

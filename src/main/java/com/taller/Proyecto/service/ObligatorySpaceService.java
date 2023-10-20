@@ -39,7 +39,6 @@ public class ObligatorySpaceService {
 
         User representative = userRepository.findById(dto.getRepresentativeId()).orElse(null);
         if (representative == null) {
-            // Manejar el error si no se encuentra el representante.
         }
 
         obligatorySpace.setName(dto.getName());

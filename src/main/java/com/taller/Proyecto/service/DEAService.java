@@ -30,23 +30,18 @@ public class DEAService {
     }
 
     public void saveDeaWithCampus(String brand, String model, Long campusId) {
-        // Crear el objeto DEA
         DEA dea = new DEA();
         dea.setBrand(brand);
         dea.setModel(model);
         dea.setDateMaintenance(new java.sql.Date(System.currentTimeMillis()));
         dea.setStatus(true);
         
-        // Guardar el objeto DEA
         dea = deaRepository.save(dea);
 
-        // Recuperar el objeto Campus usando el ID proporcionado
         Campus campus = campusRepository.findById(campusId).orElseThrow(() -> new RuntimeException("Campus no encontrado"));
 
-        // Asociar el DEA con el Campus
         campus.getDeas().add(dea);
         
-        // Guardar el objeto Campus con la relación
         campusRepository.save(campus);
     }
     

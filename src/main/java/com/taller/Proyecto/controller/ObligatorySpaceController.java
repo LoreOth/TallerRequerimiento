@@ -72,6 +72,7 @@ public class ObligatorySpaceController {
 	        dto.setProvince(space.getProvince());
 	        dto.setCUIT(space.getCUIT());
 	        dto.setId(space.getId());
+	        dto.setStatus(space.isStatus());
 	        dtos.add(dto);
 	    }
 	    return dtos;

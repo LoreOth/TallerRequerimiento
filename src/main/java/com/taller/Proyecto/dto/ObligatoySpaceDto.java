@@ -24,4 +24,6 @@ public class ObligatoySpaceDto {
 
     @NotEmpty
     private String CUIT;
+    
+    private boolean status;
 }

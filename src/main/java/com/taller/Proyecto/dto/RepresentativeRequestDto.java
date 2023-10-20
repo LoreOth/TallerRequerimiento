@@ -10,8 +10,8 @@ import lombok.ToString;
 @Getter
 @Setter
 public class RepresentativeRequestDto {
-    private Long campus_id;
-    private Long user_id;
+    private Long campusId;
+    private Long userId;
 
 
 }

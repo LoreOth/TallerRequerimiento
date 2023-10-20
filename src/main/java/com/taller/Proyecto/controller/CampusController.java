@@ -3,11 +3,16 @@ package com.taller.Proyecto.controller;
 import com.taller.Proyecto.dto.CampusDataDto;
 import com.taller.Proyecto.dto.CampusDto;
 import com.taller.Proyecto.dto.CampusResponseDto;
+import com.taller.Proyecto.dto.CampusWithRepresentativeDto;
 import com.taller.Proyecto.dto.RepresentativeRequestDto;
 import com.taller.Proyecto.entity.Campus;
 import com.taller.Proyecto.mappers.CampusMapper;
 import com.taller.Proyecto.repository.CampusRepository;
+import com.taller.Proyecto.service.CampusRepresentativeService;
 import com.taller.Proyecto.service.CampusService;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/campus")
@@ -31,12 +37,31 @@ public class CampusController {
     @Autowired
     private CampusService campusService;
     
+    @Autowired
+    private CampusRepresentativeService campusRepresnetativeService;
+    
+
+    
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/create")
     public ResponseEntity<CampusResponseDto> createCampus(@RequestBody CampusDto dto) {
         Campus campus = campusService.createCampus(dto);
         CampusResponseDto responseDto = CampusMapper.toDTO(campus);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
+    
+    
+    
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/byProvinces")
+    public ResponseEntity<List<CampusWithRepresentativeDto>> getCampusesByProvinces(@RequestParam List<String> provinces) {
+        try {
+            List<Campus> campuses = campusService.findCampusesByProvincesAndStatus(provinces, false);  
+            List<CampusWithRepresentativeDto> dtos = campusService.mapToDtoList(campuses);
+            return ResponseEntity.ok(dtos);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     
     @CrossOrigin(origins = "http://localhost:3000")
@@ -54,12 +79,28 @@ public class CampusController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
          }
     }
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/approve")
+    public ResponseEntity<CampusResponseDto> approveCampus(@RequestBody Map<String, Long> requestBody) {
+        Long campusId = requestBody.get("request");
+        try {
+            Campus approvedCampus = campusService.approveCampus(campusId);
+            CampusResponseDto responseDto = CampusMapper.toDTO(approvedCampus);
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    
     
     @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping("/updateCampusData")
     public ResponseEntity<?> updateCampusData(@RequestBody CampusDataDto campusDataDto) {
         try {
-            campusService.updateCampus(campusDataDto);  // Método en tu servicio para actualizar
+            campusService.updateCampus(campusDataDto);  
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -104,7 +145,7 @@ public class CampusController {
     @GetMapping("/representatives/{id}/campuses")
     public ResponseEntity<List<CampusDto>> getCampusesByRepresentativeId(@PathVariable Long id) {
         List<Campus> campuses = campusService.findCampusesByRepresentativeId(id);
-        return ResponseEntity.ok(mapToDtoList(campuses,null)); 
+        return ResponseEntity.ok(mapToDtoList(campuses,id)); 
     }
     
     @CrossOrigin(origins = "http://localhost:3000")
@@ -117,17 +158,6 @@ public class CampusController {
     }
     
     
-    // "http://localhost:8080/campus/representatives/add"
-    @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping("/representatives/add")
-    public ResponseEntity<?> addRepresentativeToCampus(@RequestBody RepresentativeRequestDto representativeRequest) {
-        try {
-            campusService.addRepresentativeToCampus(representativeRequest.getCampus_id(), representativeRequest.getUser_id());
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
     @Autowired
     private CampusRepository campusRepository;
     public boolean isCampusRepresentedByUser(Long campusId, Long userId) {
@@ -153,4 +183,5 @@ public class CampusController {
         }
         return dtoList;
     }
+    
 }

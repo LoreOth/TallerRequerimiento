@@ -2,7 +2,9 @@ package com.taller.Proyecto.service;
 
 import com.taller.Proyecto.dto.CampusDataDto;
 import com.taller.Proyecto.dto.CampusDto;
+import com.taller.Proyecto.dto.CampusWithRepresentativeDto;
 import com.taller.Proyecto.entity.Campus;
+import com.taller.Proyecto.entity.CampusRepresentative;
 import com.taller.Proyecto.entity.ObligatorySpace;
 import com.taller.Proyecto.entity.User;
 import com.taller.Proyecto.repository.CampusRepository;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CampusService {
@@ -38,17 +41,14 @@ public class CampusService {
         campus.setCuit(dto.getCuit());
         campus.setName(dto.getName());
             
-       
         ObligatorySpace obligatorySpace = obligatorySpaceRepository.findById(dto.getObligatorySpaceId())
                         .orElseThrow(() -> new EntityNotFoundException("ObligatorySpace not found"));
             
-     
         if (campus.getObligatorySpaces() == null) {
             campus.setObligatorySpaces(new ArrayList<>());
         }
         campus.getObligatorySpaces().add(obligatorySpace);
 
-    
         if (obligatorySpace.getCampuses() == null) {
             obligatorySpace.setCampuses(new ArrayList<>());
         }
@@ -56,22 +56,64 @@ public class CampusService {
 
         campus.setProvince(obligatorySpace.getProvince());
 
-        // Asociar el campus con su representante usando el id
         User representative = userRepository.findById(dto.getRepresentativeId())
                         .orElseThrow(() -> new EntityNotFoundException("User representative not found"));
 
-        if (campus.getRepresentatives() == null) {
-            campus.setRepresentatives(new ArrayList<>());
+        if (campus.getCampusRepresentatives() == null) {
+            campus.setCampusRepresentatives(new ArrayList<>());
         }
-        campus.getRepresentatives().add(representative);
+
+        CampusRepresentative campusRepresentative = new CampusRepresentative();
+        campusRepresentative.setUser(representative);
+        campusRepresentative.setCampus(campus);
+        campusRepresentative.setStatus(false); 
+
+        campus.getCampusRepresentatives().add(campusRepresentative);
 
         return campusRepository.save(campus);
     }
+
     public List<Campus> findCampusesByRepresentativeId(Long representativeId) {
-        return campusRepository.findByRepresentatives_Id(representativeId);
+        return campusRepository.findByCampusRepresentatives_User_Id(representativeId);
+
+    }
+    public List<CampusWithRepresentativeDto> mapToDtoList(List<Campus> campuses) {
+        List<CampusWithRepresentativeDto> dtoList = new ArrayList<>();
+        for (Campus campus : campuses) {
+            dtoList.add(mapToDto(campus));
+        }
+        return dtoList;
+    }
+    public Campus approveCampus(Long id) {
+        Optional<Campus> optionalCampus = campusRepository.findById(id);
+        if (optionalCampus.isPresent()) {
+            Campus campus = optionalCampus.get();
+            campus.setStatus(true);
+            return campusRepository.save(campus);
+        } else {
+            throw new EntityNotFoundException("No se encontró el Campus con ID " + id);
+        }
+    }
+    public CampusWithRepresentativeDto mapToDto(Campus campus) {
+        CampusWithRepresentativeDto dto = new CampusWithRepresentativeDto();
+        dto.setCampusId(campus.getId());
+        dto.setCampusName(campus.getName());
+        dto.setCampusProvince(campus.getProvince());
+        
+        if(campus.getCampusRepresentatives() != null && !campus.getCampusRepresentatives().isEmpty()) {
+            User representative = campus.getCampusRepresentatives().get(0).getUser();
+            dto.setRepresentativeFirstName(representative.getFirstName());
+            dto.setRepresentativeLastName(representative.getLastName());
+        }
+        
+        return dto;
+    }
 
 
-}
+    
+    public List<Campus> findCampusesByProvincesAndStatus(List<String> provinces, boolean status) {
+        return campusRepository.findByProvinceInAndStatus(provinces, status);
+    }
     
     public int countDeasByCampusId(Long campusId) {
         Campus campus = campusRepository.findById(campusId).orElse(null);
@@ -98,26 +140,28 @@ public class CampusService {
         campus.setAddress(campusDataDto.getAddress());
         campus.setArea(campusDataDto.getArea());
         campus.setFloors(campusDataDto.getFloors());
-       // campus.setStaff(campusDataDto.getStaff());
-       // campus.setVisits(campusDataDto.getVisits());
-
-        // Guardamos el campus actualizado en la base de datos.
+        
         campusRepository.save(campus);
     }
     
     public void addRepresentativeToCampus(Long campusId, Long userId) {
-        // 1. Obtener las instancias de Campus y User usando los IDs.
+
         Campus campus = campusRepository.findById(campusId).orElseThrow(() -> new RuntimeException("Campus no encontrado"));
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // 2. Añadir el User a la lista de representatives del Campus.
-        if (campus.getRepresentatives() == null) {
-            campus.setRepresentatives(new ArrayList<>());
-        }
-        campus.getRepresentatives().add(user);
 
-        // 3. Guardar la entidad Campus. 
-        // Debido a la relación bidireccional, JPA actualizará automáticamente la tabla intermedia.
+        CampusRepresentative campusRepresentative = new CampusRepresentative();
+        campusRepresentative.setUser(user);
+        campusRepresentative.setCampus(campus);
+        campusRepresentative.setStatus(false);  
+
+       
+        if (campus.getCampusRepresentatives() == null) {
+            campus.setCampusRepresentatives(new ArrayList<>());
+        }
+        campus.getCampusRepresentatives().add(campusRepresentative);
+
         campusRepository.save(campus);
     }
+
 }

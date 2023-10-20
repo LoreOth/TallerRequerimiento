@@ -38,8 +38,8 @@ public class User {
     private String address;
     
    
-	@ManyToMany(mappedBy = "representatives")
-    private List<Campus> representedCampuses; 
+    @OneToMany(mappedBy = "user")
+    private List<CampusRepresentative> representedCampuses;
 
    
 	@Column(nullable = false, unique = true)

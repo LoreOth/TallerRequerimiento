@@ -16,6 +16,7 @@ public class SwornDeclarationController {
 
     @Autowired
     private SwornDeclarationService service;
+    
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/SwornDeclarationSave")
     public SwornDeclaration saveDeclaration(@RequestBody SwornDeclaration declaration) {
