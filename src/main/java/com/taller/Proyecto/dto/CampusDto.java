@@ -35,7 +35,9 @@ public class CampusDto {
 
     private Long obligatorySpaceId;
     
-    private boolean status;
+    private Integer status;
+    
+    private String campusState;
 
 
     

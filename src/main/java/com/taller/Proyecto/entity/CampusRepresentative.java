@@ -37,8 +37,8 @@ public class CampusRepresentative {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "status", nullable = false, columnDefinition = "boolean default false")
-    private boolean status;
+    @Column(name = "status", nullable = false)
+    private Integer status;
 
    
 }

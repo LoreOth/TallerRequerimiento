@@ -40,6 +40,7 @@ public class CampusService {
         Campus campus = new Campus();
         campus.setCuit(dto.getCuit());
         campus.setName(dto.getName());
+        campus.setStatus(1);
             
         ObligatorySpace obligatorySpace = obligatorySpaceRepository.findById(dto.getObligatorySpaceId())
                         .orElseThrow(() -> new EntityNotFoundException("ObligatorySpace not found"));
@@ -66,7 +67,7 @@ public class CampusService {
         CampusRepresentative campusRepresentative = new CampusRepresentative();
         campusRepresentative.setUser(representative);
         campusRepresentative.setCampus(campus);
-        campusRepresentative.setStatus(false); 
+        campusRepresentative.setStatus(1); 
 
         campus.getCampusRepresentatives().add(campusRepresentative);
 
@@ -88,10 +89,18 @@ public class CampusService {
         Optional<Campus> optionalCampus = campusRepository.findById(id);
         if (optionalCampus.isPresent()) {
             Campus campus = optionalCampus.get();
-            campus.setStatus(true);
+            campus.setStatus(0);
             return campusRepository.save(campus);
         } else {
             throw new EntityNotFoundException("No se encontró el Campus con ID " + id);
+        }
+    }
+    
+    @Transactional
+    public void updateObligatorySpacesStatus(Campus campus, boolean status) {
+        List<ObligatorySpace> obligatorySpaces = campus.getObligatorySpaces();
+        for (ObligatorySpace space : obligatorySpaces) {
+            space.setStatus(status);
         }
     }
     public CampusWithRepresentativeDto mapToDto(Campus campus) {
@@ -109,9 +118,18 @@ public class CampusService {
         return dto;
     }
 
-
+    @Transactional
+    public void updateCampusStatus(Long campusId, Integer status) {
+        Campus campus = campusRepository.findById(campusId).orElse(null);
+        if (campus != null) {
+            campus.setStatus(status);
+            campusRepository.save(campus);
+        } else {
+            throw new EntityNotFoundException("Campus no encontrado con ID: " + campusId);
+        }
+    }
     
-    public List<Campus> findCampusesByProvincesAndStatus(List<String> provinces, boolean status) {
+    public List<Campus> findCampusesByProvincesAndStatus(List<String> provinces, Integer status) {
         return campusRepository.findByProvinceInAndStatus(provinces, status);
     }
     
@@ -153,7 +171,7 @@ public class CampusService {
         CampusRepresentative campusRepresentative = new CampusRepresentative();
         campusRepresentative.setUser(user);
         campusRepresentative.setCampus(campus);
-        campusRepresentative.setStatus(false);  
+        campusRepresentative.setStatus(1);  
 
        
         if (campus.getCampusRepresentatives() == null) {

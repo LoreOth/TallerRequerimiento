@@ -18,7 +18,7 @@ public interface CampusRepository extends JpaRepository<Campus, Long> {
 	Long countByCampusIdAndUserId(@Param("campusId") Long campusId, @Param("userId") Long userId);
 
 	
-	List<Campus> findByProvinceInAndStatus(List<String> provinces, boolean status);
+	List<Campus> findByProvinceInAndStatus(List<String> provinces, Integer status);
 
 
 }

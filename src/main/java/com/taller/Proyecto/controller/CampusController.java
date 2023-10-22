@@ -6,10 +6,12 @@ import com.taller.Proyecto.dto.CampusResponseDto;
 import com.taller.Proyecto.dto.CampusWithRepresentativeDto;
 import com.taller.Proyecto.dto.RepresentativeRequestDto;
 import com.taller.Proyecto.entity.Campus;
+import com.taller.Proyecto.entity.ObligatorySpace;
 import com.taller.Proyecto.mappers.CampusMapper;
 import com.taller.Proyecto.repository.CampusRepository;
 import com.taller.Proyecto.service.CampusRepresentativeService;
 import com.taller.Proyecto.service.CampusService;
+
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -29,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+import com.taller.Proyecto.service.StateSpace;
 @RestController
 @RequestMapping("/campus")
 public class CampusController {
@@ -56,7 +58,7 @@ public class CampusController {
     @GetMapping("/byProvinces")
     public ResponseEntity<List<CampusWithRepresentativeDto>> getCampusesByProvinces(@RequestParam List<String> provinces) {
         try {
-            List<Campus> campuses = campusService.findCampusesByProvincesAndStatus(provinces, false);  
+            List<Campus> campuses = campusService.findCampusesByProvincesAndStatus(provinces, 1);  
             List<CampusWithRepresentativeDto> dtos = campusService.mapToDtoList(campuses);
             return ResponseEntity.ok(dtos);
         } catch (Exception e) {
@@ -85,7 +87,14 @@ public class CampusController {
         Long campusId = requestBody.get("request");
         try {
             Campus approvedCampus = campusService.approveCampus(campusId);
+            
             CampusResponseDto responseDto = CampusMapper.toDTO(approvedCampus);
+            
+            campusService.updateObligatorySpacesStatus(approvedCampus, true);
+            
+            
+            
+            
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -94,7 +103,18 @@ public class CampusController {
         }
     }
     
-    
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/updateCampusStatus")
+    public ResponseEntity<?> updateCampusStatus(
+            @RequestParam Long campusId,
+            @RequestParam Integer status) {
+        try {
+            campusService.updateCampusStatus(campusId, status);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
     
     @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping("/updateCampusData")
@@ -172,7 +192,7 @@ public class CampusController {
         dto.setName(campus.getName());
         dto.setProvince(campus.getProvince());
         dto.setRepresented(isCampusRepresentedByUser(campus.getId(), userId));
-        dto.setStatus(campus.isStatus());
+        dto.setStatus(campus.getStatus());
         return dto;
     }
 

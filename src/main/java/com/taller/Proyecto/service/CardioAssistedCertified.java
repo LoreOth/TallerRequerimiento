@@ -1,13 +1,21 @@
 package com.taller.Proyecto.service;
 
 import com.taller.Proyecto.entity.Campus;
-import com.taller.Proyecto.entity.ObligatorySpace;
 
-public class CardioAssistedCertified extends StateSpace {
+
+public class CardioAssistedCertified implements StateSpace {
+
+
 
 	@Override
-	void handle(Campus campus) {
-		campus.setState(new CardioAssistedCertified());
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void handle(Campus campus) {
+		// TODO Auto-generated method stub
 		
 	}
 

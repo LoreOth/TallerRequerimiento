@@ -32,7 +32,7 @@ public class CampusRepresentativeService {
 
         representative.setCampus(campus);
         representative.setUser(user);
-        representative.setStatus(false);
+        representative.setStatus(1);
 
         return campusRepresentativeRepository.save(representative);
     }

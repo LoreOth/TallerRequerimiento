@@ -14,5 +14,6 @@ public class CampusResponseDto {
 	    private String province;
 	    private String name;
 	    private String cuit;
-	    private boolean status;
+	    private Integer status;
+	    private String campusState;
 }

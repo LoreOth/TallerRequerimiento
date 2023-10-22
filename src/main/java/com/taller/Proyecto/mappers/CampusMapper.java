@@ -10,7 +10,8 @@ public class CampusMapper {
         dto.setProvince(campus.getProvince());
         dto.setName(campus.getName());
         dto.setCuit(campus.getCuit());
-        dto.setStatus(campus.isStatus());
+        dto.setStatus(campus.getStatus());
+  
         
         return dto;
     }

@@ -84,12 +84,8 @@ public class Campus {
     @ManyToMany(mappedBy = "campuses")
     private List<ObligatorySpace> obligatorySpaces;
     
-    @Transient
-    private StateSpace state;
-
-    @Column(nullable = false, columnDefinition = "boolean default false")
-    private boolean status;
-
+    @Column(nullable = false, columnDefinition = "INTEGER DEFAULT 1")
+    private Integer status;
 
 
 
