@@ -55,8 +55,8 @@ public class SwornDeclarationController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/updateDeclarationStatus")
-    public void updateDeclarationStatus(@RequestParam Long declarationId) {
-        service.updateDeclarationStatusToZero(declarationId);
+    public void updateDeclarationStatus(@RequestBody SwornDeclaration declaration) {
+        service.updateDeclaration(declaration);
     }
 
     private SwornDeclarationResponseDto mapSwornDeclarationToResponseDto(SwornDeclaration swornDeclaration) {

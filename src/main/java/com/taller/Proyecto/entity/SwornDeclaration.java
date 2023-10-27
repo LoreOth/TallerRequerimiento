@@ -1,7 +1,10 @@
 package com.taller.Proyecto.entity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -45,5 +48,11 @@ public class SwornDeclaration {
     @JoinColumn(name = "campusId", insertable = false, updatable = false)
     private Campus campus;
 
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdDate;
+
+    @Column(length = 1000) 
+    private String observations;
     
 }

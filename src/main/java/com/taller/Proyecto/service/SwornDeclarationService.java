@@ -34,6 +34,17 @@ public class SwornDeclarationService {
 
         return responseDtos;
     }
+    public SwornDeclaration updateDeclaration(SwornDeclaration declaration) {
+        if (declaration.getId() == null) {
+            throw new IllegalArgumentException("Declaration ID cannot be null for update");
+        }
+        declaration.setPending(false);
+        return repository.save(declaration);
+    }
+    
+    public void setDeclarationStatusToZero(Long declarationId) {
+    	repository.updateDeclarationStatusToZero(declarationId);
+    }
 
     public void updateDeclarationStatusToZero(Long declarationId) {
     	repository.updateDeclarationStatusToZero(declarationId);
