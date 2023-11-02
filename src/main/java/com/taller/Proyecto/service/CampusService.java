@@ -6,6 +6,7 @@ import com.taller.Proyecto.dto.CampusWithRepresentativeDto;
 import com.taller.Proyecto.entity.Campus;
 import com.taller.Proyecto.entity.CampusRepresentative;
 import com.taller.Proyecto.entity.ObligatorySpace;
+import com.taller.Proyecto.entity.SwornDeclaration;
 import com.taller.Proyecto.entity.User;
 import com.taller.Proyecto.repository.CampusRepository;
 import com.taller.Proyecto.repository.ObligatorySpaceRepository;
@@ -73,6 +74,15 @@ public class CampusService {
 
         return campusRepository.save(campus);
     }
+    
+
+    public void updateCampusStatusRejectedDJ(Long campusId, Integer newStatus) {
+        Campus campus = campusRepository.findById(campusId)
+            .orElseThrow(() -> new EntityNotFoundException("Campus not found"));
+
+        campus.setStatus(newStatus);
+        campusRepository.save(campus);
+    }
 
     public List<Campus> findCampusesByRepresentativeId(Long representativeId) {
         return campusRepository.findByCampusRepresentatives_User_Id(representativeId);
@@ -89,7 +99,7 @@ public class CampusService {
         Optional<Campus> optionalCampus = campusRepository.findById(id);
         if (optionalCampus.isPresent()) {
             Campus campus = optionalCampus.get();
-            campus.setStatus(0);
+            campus.setStatus(5);
             return campusRepository.save(campus);
         } else {
             throw new EntityNotFoundException("No se encontró el Campus con ID " + id);
@@ -181,5 +191,20 @@ public class CampusService {
 
         campusRepository.save(campus);
     }
+    
+    public boolean shouldUpdateStatusToZero(SwornDeclaration declaration) {
+        if (
+            declaration.getHasTrainedStaff() &&
+            declaration.getHasAppropriateSignage() &&
+            declaration.getHasSuddenDeathProtocol() &&
+            declaration.getHasMedicalEmergencySystem()
+        ) {
+            Campus campus = findCampusById(declaration.getCampusId());
+            int deaCountInDb = countDeasByCampusId(declaration.getCampusId());
+            return deaCountInDb == declaration.getDeaCount();
+        }
+        return false;
+    }
+
 
 }

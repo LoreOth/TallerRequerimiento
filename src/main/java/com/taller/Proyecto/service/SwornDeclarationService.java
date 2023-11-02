@@ -16,9 +16,21 @@ public class SwornDeclarationService {
     @Autowired
     private SwornDeclarationRepository repository;
 
-    public SwornDeclaration saveDeclaration(SwornDeclaration declaration) {
-    	declaration.setPending(true);
-        return repository.save(declaration);
+    public SwornDeclaration saveOrUpdateDeclaration(SwornDeclaration declaration, boolean status) {
+        List<SwornDeclaration> existingDeclarations = repository.findByCampusId(declaration.getCampusId());
+        declaration.setPending(status);
+        if (!existingDeclarations.isEmpty()) {
+            SwornDeclaration existingDeclaration = existingDeclarations.get(0);
+            existingDeclaration.setHasAppropriateSignage(declaration.getHasAppropriateSignage());
+            existingDeclaration.setHasMedicalEmergencySystem(declaration.getHasMedicalEmergencySystem());
+            existingDeclaration.setHasSuddenDeathProtocol(declaration.getHasSuddenDeathProtocol());
+            existingDeclaration.setHasTrainedStaff(declaration.getHasTrainedStaff());
+            existingDeclaration.setObservations(declaration.getObservations());
+            existingDeclaration.setPending(status);
+            return repository.save(existingDeclaration);
+        } else {
+            return repository.save(declaration);
+        }
     }
 
 
@@ -34,13 +46,21 @@ public class SwornDeclarationService {
 
         return responseDtos;
     }
-    public SwornDeclaration updateDeclaration(SwornDeclaration declaration) {
+    public SwornDeclaration updateDeclaration(SwornDeclaration declaration, Boolean status) {
         if (declaration.getId() == null) {
             throw new IllegalArgumentException("Declaration ID cannot be null for update");
         }
-        declaration.setPending(false);
+        declaration.setPending(status);
         return repository.save(declaration);
     }
+    public SwornDeclaration updateVisitStatus(SwornDeclaration declaration, Boolean status) {
+        if (declaration.getId() == null) {
+            throw new IllegalArgumentException("Declaration ID cannot be null for update");
+        }
+        declaration.setVisitStatus(status);
+        return repository.save(declaration);
+    }
+    
     
     public void setDeclarationStatusToZero(Long declarationId) {
     	repository.updateDeclarationStatusToZero(declarationId);

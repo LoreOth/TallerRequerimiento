@@ -28,5 +28,12 @@ public interface SwornDeclarationRepository extends JpaRepository<SwornDeclarati
     
     @Query("SELECT sd FROM SwornDeclaration sd JOIN FETCH sd.campus c WHERE sd.pending = false")
     List<SwornDeclaration> findNotPendingWithCampus();
+    
+    List<SwornDeclaration> findByCampusId(Long campusId);
+    
+    @Transactional
+    @Modifying
+    @Query("UPDATE SwornDeclaration sd SET sd.visitStatus = false WHERE sd.id = :declarationId")
+    void updateDeclarationVisitStatus(Long declarationId);
 
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -37,8 +38,11 @@ public class SwornDeclaration {
     private Integer deaCount;
     private Long campusId;
     
-    @Column(columnDefinition = "boolean default true", nullable = false)
+    @Column(columnDefinition = "boolean default true")
     private Boolean pending;
+    
+    @Column
+    private Boolean visitStatus;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "declaration_id")
@@ -48,8 +52,7 @@ public class SwornDeclaration {
     @JoinColumn(name = "campusId", insertable = false, updatable = false)
     private Campus campus;
 
-    @CreationTimestamp
-    @Column(updatable = false)
+    @UpdateTimestamp
     private LocalDateTime createdDate;
 
     @Column(length = 1000) 

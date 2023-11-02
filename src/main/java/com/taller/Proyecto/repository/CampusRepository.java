@@ -2,6 +2,7 @@ package com.taller.Proyecto.repository;
 
 import com.taller.Proyecto.entity.Campus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -19,6 +20,10 @@ public interface CampusRepository extends JpaRepository<Campus, Long> {
 
 	
 	List<Campus> findByProvinceInAndStatus(List<String> provinces, Integer status);
+
+	@Modifying
+	@Query("UPDATE Campus c SET c.status = :status WHERE c.id = :campusId")
+	void updateStatusById(@Param("campusId") Long campusId, @Param("status") Integer status);
 
 
 }

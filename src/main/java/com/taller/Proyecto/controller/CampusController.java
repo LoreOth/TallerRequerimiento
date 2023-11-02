@@ -174,7 +174,7 @@ public class CampusController {
     	    @PathVariable Long obligatorySpaceId,
     	    @RequestParam Long userId) {
         List<Campus> campuses = campusService.findCampusesByObligatorySpaceId(obligatorySpaceId);
-        return mapToDtoList(campuses, userId); // Aquí usas el método de mapeo
+        return mapToDtoList(campuses, userId); 
     }
     
     
