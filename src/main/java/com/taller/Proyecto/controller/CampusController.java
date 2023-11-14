@@ -6,6 +6,7 @@ import com.taller.Proyecto.dto.CampusResponseDto;
 import com.taller.Proyecto.dto.CampusWithRepresentativeDto;
 import com.taller.Proyecto.dto.RepresentativeRequestDto;
 import com.taller.Proyecto.entity.Campus;
+import com.taller.Proyecto.entity.DEA;
 import com.taller.Proyecto.entity.ObligatorySpace;
 import com.taller.Proyecto.mappers.CampusMapper;
 import com.taller.Proyecto.repository.CampusRepository;
@@ -51,7 +52,6 @@ public class CampusController {
         CampusResponseDto responseDto = CampusMapper.toDTO(campus);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
-    
     
     
     @CrossOrigin(origins = "http://localhost:3000")

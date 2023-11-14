@@ -5,6 +5,7 @@ import com.taller.Proyecto.dto.CampusDto;
 import com.taller.Proyecto.dto.CampusWithRepresentativeDto;
 import com.taller.Proyecto.entity.Campus;
 import com.taller.Proyecto.entity.CampusRepresentative;
+import com.taller.Proyecto.entity.DEA;
 import com.taller.Proyecto.entity.ObligatorySpace;
 import com.taller.Proyecto.entity.SwornDeclaration;
 import com.taller.Proyecto.entity.User;
@@ -36,6 +37,19 @@ public class CampusService {
     @Autowired
     private UserRepository userRepository;
 
+    public List<Campus> findAllCampuses() {
+        return campusRepository.findAll();
+    }
+
+    public List<DEA> getDeasByCampus(Long campusId) {
+        Campus campus = this.findCampusById(campusId);
+        if (campus != null) {
+            return campus.getDeas();
+        } else {
+            throw new EntityNotFoundException("Campus no encontrado con ID: " + campusId);
+        }
+    }
+    
     @Transactional
     public Campus createCampus(CampusDto dto) {
         Campus campus = new Campus();
@@ -75,7 +89,7 @@ public class CampusService {
         return campusRepository.save(campus);
     }
     
-
+    @Transactional
     public void updateCampusStatusRejectedDJ(Long campusId, Integer newStatus) {
         Campus campus = campusRepository.findById(campusId)
             .orElseThrow(() -> new EntityNotFoundException("Campus not found"));
